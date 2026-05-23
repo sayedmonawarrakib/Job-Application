@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacancy Enquiry - FT Care Agency Limited</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset & Base Variables --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2e7d32;
+            /* Modern Green */
+            --accent-color: #ff9800;
+            /* Modern Orange */
+            --text-dark: #2d3748;
+            /* Deep slate for text readability */
+            --text-light: #718096;
+            /* Secondary text */
+            --bg-light: #f7fafc;
+            /* Soft light grey */
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-dark);
+            background-color: var(--white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- Buttons & Links --- */
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+            background-color: #246427;
+        }
+
+        .btn-outline {
+            background-color: black;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background-color: #2e7d32;
+            color: var(--white);
+        }
+
+        /* --- Header --- */
+        .main-header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text .green {
+            color: var(--primary-color);
+        }
+
+        .logo-text .orange {
+            color: var(--accent-color);
+        }
+
+        .logo-text .group {
+            color: #718096;
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            background: linear-gradient(135deg, #f9fbf9 0%, #f4f7f4 100%);
+            padding: 80px 0;
+            overflow: hidden;
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-content .badge {
+            display: inline-block;
+            background-color: rgba(46, 125, 50, 0.1);
+            color: var(--primary-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: #1a202c;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            margin-bottom: 32px;
+            max-width: 520px;
+        }
+
+        .hero-image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 420px;
+            height: 420px;
+            border-radius: 15% 70% 60% 80% / 15% 75% 30% 50%;
+            background-color: var(--primary-color);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgb(0 0 0 / 33%);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            /* object-fit: cover; */
+        }
+
+        /* --- Job Opportunities Section --- */
+        .jobs-section {
+            padding: 100px 0;
+            background-color: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            font-size: 1.05rem;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .job-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .job-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .job-card h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .job-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+        }
+
+        .btn-link {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        .btn-link:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- Footer --- */
+        .main-footer {
+            background-color: #1a202c;
+            color: #e2e8f0;
+            padding: 80px 0 40px 0;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .footer-nav a {
+            font-size: 0.95rem;
+            color: #a0aec0;
+        }
+
+        .footer-nav a:hover {
+            color: var(--white);
+        }
+
+        .footer-divider {
+            border: 0;
+            border-top: 1px solid #2d3748;
+            margin-bottom: 40px;
+        }
+
+        .footer-grid {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 50px;
+            justify-content: center;
+            flex-direction: row;
+        }
+
+        .footer-column {
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-column h3 {
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .footer-column p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .footer-contact {
+            display: inline-block;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .footer-contact:hover {
+            color: var(--white);
+        }
+
+        .footer-emergency {
+            text-align: center;
+            background-color: #2d3748;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 50px;
+        }
+
+        .footer-emergency p {
+            margin: 6px 0;
+            font-size: 1rem;
+        }
+
+        .footer-emergency .highlight {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 50px;
+            flex-direction: row;
+        }
+
+        .trust-badges img {
+            height: 100px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px rgba(6, 222, 255, 0.601);
+        }
+
+        .trust-badges img:hover {
+            transform: scale(.9);
+            transition-duration: .5s;
+        }
+
+        .badge-placeholder {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e0;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #718096;
+            border-top: 1px solid #2d3748;
+            padding-top: 30px;
+        }
+
+        /* --- Responsive Adaptations --- */
+        @media (max-width: 992px) {
+            .hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-content p {
+                margin: 0 auto 32px auto;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .nav-links {
+                display: none;
+                /* Can be integrated into a mobile burger menu */
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .image-wrapper {
+                width: 280px;
+                height: 280px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="main-header" id="header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="https://ftcareagency.co.uk/"><img src="Logo.png" alt="logo" style="height: 50px;"></a>
+
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="active">Home</a>
+                <a href="https://ftcareagency.co.uk/our-services/">Services</a>
+                <a href="https://ftcareagency.co.uk/about-us/">About</a>
+                <a href="https://ftcareagency.co.uk/">More</a>
+            </nav>
+            <div class="header-cta">
+                <a href="https://ftcareagency.co.uk/contact-us/" class="btn btn-outline">Contact us</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="badge">Careers</span>
+                <h1>Vacancy Enquiry</h1>
+                <p>Are you a carer looking for rewarding career opportunities? We would love to hear from you and
+                    welcome you to our growing team.</p>
+                <a href="updat_v2.html" class="btn btn-primary">Apply Now</a>
+            </div>
+            <div class="hero-image-container">
+                <div class="image-wrapper">
+                    <img src="image/image.jpeg" alt="FT Care agency limited">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="jobs-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Job Opportunities</h2>
+                <p>Explore open roles and take the next step in your professional caregiving journey.</p>
+            </div>
+            <div class="jobs-grid">
+                <div class="job-card">
+                    <div class="job-card-body">
+                        <div class="job-icon">👤</div>
+                        <h3>Community Support Worker</h3>
+                        <p>Join our dedicated team providing essential support, companionship, and high-quality care to
+                            individuals within the community.</p>
+                    </div>
+                    <div class="job-card-footer">
+                        <a href="#" class="btn-link" download="Community+Support+Worker.pdf">View Job Descrtption →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+
+            <div class="footer-nav">
+                <a href="#">Home</a>
+                <a href="https://ftcareagency.co.uk/">FT Care</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>Head Office</h3>
+                    <p>Victoria Works,<br> Victoria Road
+                        Bexhill-on-Saea <br> TN39 3PD United Kingdom </p>
+                    <a href="tel:+4401424212199" class="footer-contact">📞 +44 (0) 1424212199</a>
+                </div>
+
+            </div>
+
+            <div class="footer-emergency">
+                <p><strong>Oncall/Out-of-hours:</strong> <a href="tel:+4401424212199" class="highlight">+44 (0)
+                        1424212199</a></p>
+                <p><strong>Email:</strong> <a href="mailto:admin@ftcareagency.co.uk">admin@ftcareagency.co.uk</a></p>
+            </div>
+
+            <div class="trust-badges">
+                <img src="image/1.jpeg" alt="image">
+                <img src="image/2.jpeg" alt="image">
+                <img src="image/3.jpeg" alt="image">
+                <img src="image/4.jpeg" alt="image">
+                <img src="image/5.jpeg" alt="image">
+                <img src="image/6.jpeg" alt="image">
+                <img src="image/7.jpeg" alt="image">
+                <img src="image/8.jpeg" alt="image">
+                <img src="image/9.jpeg" alt="image">
+                <img src="image/10.jpeg" alt="image">
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 FT Care Agency Limited || All rights reserved.</p>
+                <p class="developer-credit">Powered by <a href="#">Dev Index</a></p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,2661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application</title>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+        /* Base Resets & Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(300deg, #00deff94, #8e24aa63);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #logo {
+            width: 70%;
+            margin: auto;
+            display: block;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: rgba(255, 255, 255, 0.719);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #222;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e0e0e0;
+            margin: 30px 0;
+        }
+
+        a {
+            color: #c65c2b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #c65c2b;
+            transition: width 0.3s ease;
+        }
+
+        /* Step Visibility */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-title {
+            margin-bottom: 15px;
+            color: #666;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #111;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Typography & Content Layouts */
+        .subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+        }
+
+        .info-section h3 {
+            font-size: 18px;
+            color: #111111;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .info-section p {
+            font-size: 13.5px;
+            color: #444444;
+            margin-bottom: 12px;
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        .instruction {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #222;
+        }
+
+        .notes {
+            margin-top: 25px;
+            color: #444;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .declaration-text,
+        .footnote-text {
+            font-size: 14px;
+            color: #444444;
+            text-align: justify;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .footnote-text {
+            font-size: 13px;
+            color: #555555;
+            margin-top: 30px;
+        }
+
+        /* Form Controls Baseline */
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #222;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 14px;
+            color: #333333;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            outline: none;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #c65c2b;
+            background-color: #ffffff;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Form Grids & Grouping Layouts */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid1 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 40px;
+            row-gap: 16px;
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 40px;
+            margin-bottom: 30px;
+        }
+
+        .input-grid-twin {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .address-grid-bottom {
+            display: grid;
+            grid-template-columns: 1.2fr 1.2fr 1.6fr;
+            gap: 16px;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .grid {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .box {
+            flex: 1;
+        }
+
+        /* Alignment Utilities */
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group,
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .name-row,
+        .input-row,
+        .input-row-twin {
+            display: flex;
+            gap: 15px;
+        }
+
+        .name-row input,
+        .input-row input,
+        .input-row-twin input {
+            flex: 1;
+        }
+
+        .margin-bottom-sm {
+            margin-bottom: 12px !important;
+        }
+
+        /* Choice Selectors (Radios/Checkboxes) */
+        .radio-group,
+        .radio-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 6px;
+        }
+
+        .radio-group label,
+        .radio-options label {
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .checkbox-group,
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .checkbox-group label,
+        .radio-option label {
+            font-weight: normal;
+            color: #333333;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-section {
+            margin-top: 30px;
+        }
+
+        .checkbox-section h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .check-item input[type="checkbox"],
+        .checkbox-group input[type="checkbox"],
+        .radio-option input[type="radio"],
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #c65c2b;
+        }
+
+        .s {
+            font-size: 14.5px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        /* Specific Component Customizations */
+        .assessment-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 13.5px;
+            color: #111111;
+            margin-bottom: 4px;
+        }
+
+        .form-section h3,
+        .form-section h2 {
+            font-size: 18px;
+            color: #111;
+            margin: 25px 0 15px 0;
+            text-align: left;
+            border-left: 4px solid #c65c2b;
+            padding-left: 10px;
+        }
+
+        .reference-block {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            background: #fafafa;
+        }
+
+        .reference-block legend {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 0 10px;
+            color: #111111;
+        }
+
+        .main-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            line-height: 1.4;
+        }
+
+        .note {
+            font-weight: normal;
+            color: #555555;
+            font-size: 13px;
+        }
+
+        .required-label::after {
+            content: " *";
+            color: #de350b;
+        }
+
+        .asterisk {
+            color: #de350b;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 30px;
+        }
+
+        .select-wrapper::after {
+            content: "▼";
+            font-size: 10px;
+            color: #666666;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Night Worker Adjustments */
+        .night-worker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .night-worker-header>div:first-child {
+            max-width: 70%;
+        }
+
+        .sub-text-right {
+            font-size: 13px;
+            font-weight: bold;
+            color: #444444;
+            text-align: right;
+        }
+
+        /* Table Responsive Layouts */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 25px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+            background: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #dcdcdc;
+            padding: 12px;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .row-num {
+            font-weight: bold;
+            text-align: center;
+            background-color: #f8f9fa;
+            width: 30px;
+        }
+
+        table ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+        }
+
+        table p {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        table p:last-child {
+            margin-bottom: 0;
+        }
+
+        .table-subtext {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Dropzones File Upload UI */
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .upload-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .dropzone {
+            border: 2px dashed #cccccc;
+            background-color: #fafafa;
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .dropzone:hover {
+            border-color: #c65c2b;
+        }
+
+        .upload-instruction {
+            font-size: 12px;
+            color: #666666;
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        /* Navigation Buttons Panel */
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        button {
+            height: 40px;
+            padding: 0 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .prev-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .prev-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .next-btn {
+            background: #c65c2b;
+            color: #fff;
+        }
+
+        .next-btn:hover {
+            background: #a7491f;
+        }
+
+        .submit-btn {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .submit-btn:hover {
+            background: #15803d;
+        }
+
+        /* Actions Feedback Block */
+        .success-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(22, 101, 52, 0.1);
+        }
+
+        /* Tablet/Mobile Adaptations */
+        @media(max-width:768px) {
+
+            .form-grid,
+            .form-grid3,
+            .form-grid1,
+            .grid-container,
+            .checklist-grid,
+            .input-grid-twin,
+            .address-grid-bottom,
+            .upload-grid,
+            .grid {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .night-worker-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .night-worker-header>div:first-child {
+                max-width: 100%;
+            }
+
+            .sub-text-right {
+                text-align: left;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div style="width: 100%; display: flex; justify-content: center;"><img src="Logo.png" alt="logo" id="logo">
+        </div>
+
+        <h2>Job Application</h2>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <form id="multiStepForm">
+
+            <!-- STEP 1 -->
+            <div class="step active">
+                <div class="step-title">Step 1 of 11</div>
+                <h1 class="section-title">Section 1: Personal Details</h1>
+
+                <div>
+
+                    <div class="form-grid">
+
+                        <div>
+                            <label>Title</label>
+                            <select>
+                                <option>Select</option>
+                                <option>Mr</option>
+                                <option>Mrs</option>
+                                <option>Miss</option>
+                                <option>Ms</option>
+                            </select>
+                        </div>
+
+                        <div class="full">
+                            <label>Name</label>
+
+                            <div class="name-row">
+                                <input type="text" placeholder="First">
+                                <input type="text" placeholder="Last">
+                            </div>
+                        </div>
+
+                        <div class="full">
+                            <label>Address</label>
+                            <input type="text" placeholder="Address Line 1">
+                        </div>
+
+                        <div>
+                            <input type="text" placeholder="City">
+                        </div>
+
+                        <div>
+                            <input type="text" placeholder="Postal / Zip Code">
+                        </div>
+
+                        <div>
+                            <select id="country">
+                                <option>country</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Date of Birth</label>
+                            <input type="date">
+                        </div>
+
+                        <div>
+                            <label>Home Telephone</label>
+                            <input type="text">
+                        </div>
+
+                        <div>
+                            <label>Mobile Telephone</label>
+                            <input type="text">
+                        </div>
+
+                        <div>
+                            <label>Email</label>
+                            <input type="email">
+                        </div>
+
+                        <div>
+                            <label>National Insurance Number</label>
+                            <input type="text">
+                        </div>
+
+                        <div>
+                            <label>Are you eligible to work in the UK?</label>
+
+                            <div class="radio-group">
+                                <label><input type="radio" name="work"> Yes</label>
+                                <label><input type="radio" name="work"> No</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>Do you hold a full driving license?</label>
+
+                            <div class="radio-group">
+                                <label><input type="radio" name="drive"> Yes</label>
+                                <label><input type="radio" name="drive"> No</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>If yes, do you have any points or convictions?</label>
+                            <input type="text">
+                        </div>
+
+                        <div>
+                            <label>Are you a qualified nurse?</label>
+
+                            <div class="radio-group">
+                                <label><input type="radio" name="nurse"> Yes</label>
+                                <label><input type="radio" name="nurse"> No</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>NMC Pin (Qualified nurses only)</label>
+                            <input type="text">
+                        </div>
+
+                        <div>
+                            <label>NMC expiry date (Qualified nurses only)</label>
+                            <input type="date">
+                        </div>
+
+                        <div>
+                            <label>Please state current salary/hourly rate:</label>
+                            <input type="text">
+                        </div>
+
+                    </div>
+
+                    <div class="checkbox-section">
+
+                        <h3>
+                            You are required to provide evidence of the above details at your interview by bringing with
+                            you:
+                        </h3>
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Proof of eligibility to work in the UK (Passport / Visa etc.)</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Driving License & Counterpart if applicable</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Photo ID Card</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Proof of NI number</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Proof of address (dated within last 3 months)</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Past 5 years of address (including postcode, moving in and out dates)</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Dates of any name changes</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">Complete CV from high school to date, all gaps explained</span>
+                        </div>
+
+                        <div class="check-item">
+                            <input type="checkbox">
+                            <span class="s">2 x references (1 from your most recent employer, 1 from your next most
+                                recent
+                                employer)</span>
+                        </div>
+
+                    </div>
+
+                    <div class="notes">
+                        <p class="s">Referees will be contacted to verify the references given.</p>
+                        <p class="s">All documents must be translated into English where applicable.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step">
+                <div class="step-title">Step 2 of 11</div>
+                <h2>Section 2: Rehabilitation of Offenders Act</h2>
+
+                <p>
+                    It is important that you read the 'Filtering rules for criminal record check certificates'
+                    guidance prior to completing this section of the application form.
+                    A copy is available on the
+                    <a href="#">Disclosure and Barring Service website</a>.
+                </p>
+                <br>
+                <br>
+                <p>
+                    Filtering rules: As of 29 May 2013 you are no longer required to disclose information about
+                    any 'filtered' offences... Guidance can be found on the
+                    <a href="#">Disclosure and Barring Service website</a>.
+                </p>
+                <br>
+                <br>
+
+                <p>
+                    Subject to the filtering rules failure to declare a conviction may result in exclusion or
+                    termination
+                    of assignment if later discovered.
+                </p>
+                <br>
+                <br>
+
+                <p>
+                    As an exception to the Rehabilitation of Offenders Act 1974, certain roles require disclosure
+                    of all spent and unspent convictions.
+                </p>
+
+                <div class="grid">
+
+                    <!-- Left side -->
+                    <div class="box">
+                        <label>
+                            If this section does not apply to you, please mark “not applicable”
+                        </label>
+
+                        <div class="checkbox">
+                            <input type="checkbox"> Not Applicable
+                        </div>
+
+                        <div class="btn-area">
+                            <label>I fully understand the Rehabilitation of Offenders Act as detailed above *</label>
+                            <div class="radio">
+                                <input type="radio" name="agree"> Yes
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right side -->
+                    <div class="box">
+                        <label>If you have any convictions, please detail here:</label>
+                        <textarea placeholder="Enter details..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="step">
+                <div class="step-title">Step 3 of 11</div>
+                <div class="form-container">
+                    <header>
+                        <h2 style="margin: 0px;">Section 3: Health</h2>
+                        <p class="subtitle"><em>Ft care Agency Limited operates an equal opportunities policy</em></p>
+                    </header>
+
+                    <div>
+                        <div class="form-grid3">
+                            <div class="form-group">
+                                <label class="main-label">Do you consider yourself to have a disability within the terms
+                                    of the Equality Act 2010?</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="disability" value="yes"> Yes</label>
+                                    <label><input type="radio" name="disability" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="main-label">If you have a disability please provide details:</label>
+                                <textarea name="disability_details" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-grid3">
+                            <div class="form-group">
+                                <label class="main-label">Do you have any special requirements to enable you to attend
+                                    for a job interview or take up a position for which you are considered to have the
+                                    minimum appropriate skills and/or experiences?</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="requirements" value="yes"> Yes</label>
+                                    <label><input type="radio" name="requirements" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="main-label">If you have special requirements, please provide
+                                    details</label>
+                                <textarea name="requirements_details" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <section class="info-section">
+                            <h3>Flexible Employee Health & Safety Declarations</h3>
+                            <p>All employers must have a Health & Safety Policy stating who is responsible for Health &
+                                Safety and the Health & Safety arrangements in place. All Flexible Employees have a duty
+                                under The Health & Safety Act to take reasonable care to safeguard their own safety and
+                                the safety of anyone who may be affected by their work activities and actions and to
+                                co-operate with the Client and others in meeting statutory regulations.</p>
+                            <p>It is your responsibility to familiarize yourself with the Clients policy, particularly
+                                the procedures for fire, first aid and accidents upon arrival at the Clients premises.
+                                The Act also requires Flexible employees not to interfere with or misuse anything
+                                provided to protect their health, safety or welfare in compliance with the Act.</p>
+                            <p class="instruction">Please complete the following questions to help FT Care Agency
+                                Limited provide you with a suitable working environment and ensure we can support any
+                                special requirements or reasonable adjustments you may need.</p>
+                        </section>
+
+                        <div class="form-grid3">
+                            <div class="form-group">
+                                <label class="main-label"><strong>1 - Do you have any special needs or requirements
+                                        relating to any medical condition(s) that the Clients should be made aware of in
+                                        case of emergency?</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="med_q1" value="yes"> Yes</label>
+                                    <label><input type="radio" name="med_q1" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="main-label">If you have special requirements, please provide
+                                    details</label>
+                                <textarea name="med_q1_details" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-grid3">
+                            <div class="form-group">
+                                <label class="main-label"><strong>2 - Do you have any special needs or requirements
+                                        relating to any medical condition(s) that the Clients should be made aware of in
+                                        case of emergency?</strong> <span class="note">(for example: Back problems, eye
+                                        problems, diabetic, asthmatic, epilepsy, pregnancy etc.)</span></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="med_q2" value="yes"> Yes</label>
+                                    <label><input type="radio" name="med_q2" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="main-label">If you have special requirements, please provide details
+                                    here</label>
+                                <textarea name="med_q2_details" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-grid3">
+                            <div class="form-group">
+                                <label class="main-label"><strong>3 - Do you have any Allergies?</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="allergies" value="yes"> Yes</label>
+                                    <label><input type="radio" name="allergies" value="no"> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="main-label">If you have any allergies please provide more
+                                    information</label>
+                                <textarea name="allergies_details" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <section class="info-section">
+                            <h3>Health & Safety Assessment Declaration for Night Workers</h3>
+                            <p>In compliance with the working time regulation the purpose of this declaration is to
+                                assess your fitness to carry out night work whilst on assignment from FT Care Agency
+                                Limited.
+                                Whilst there is no difference in the physical demands of night work compared today work
+                                the human body is naturally programmed to sleep at night. The disruption to this sleep
+                                pattern can aggravate certain medical conditions, albeit often temporarily.
+                                Additionally, the reduced access to services and facilities that may be apparent both
+                                inside and outside the workplace at night can have an effect.</p>
+                            <p>Please answer the following questions. If your answers raise doubts about your fitness
+                                for night work, then unfortunately you may not be assigned to Clients for night work
+                                unless you are able to provide proof that you are physically able to do so having been
+                                assessed by a suitably qualified health care professional.</p>
+                        </section>
+
+                        <div class="night-worker-header">
+                            <div>
+                                <label class="main-label"><strong>Do you have any health concerns that you feel may
+                                        prevent you from working at night? (Please read the points below before
+                                        answering this question)</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_concern" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_concern" value="no"> No</label>
+                                </div>
+                            </div>
+                            <div class="sub-text-right">
+                                <p>If YES, are these based on:</p>
+                            </div>
+                        </div>
+
+                        <div class="checklist-grid">
+                            <div class="form-group">
+                                <label><strong>1 - The requirement to take medication (tablets, insulin injections etc.)
+                                        on a strict timetable.</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q1" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q1" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>2 - Heart or circulatory problems that could be aggravated by the
+                                        additional stress/required stamina that night work may require.</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q2" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q2" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>3 - Stomach, intestinal or other disorders where the regularity/timing of
+                                        meals are important.</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q3" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q3" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>4 - Medical conditions that affect the ability to sleep during the day or
+                                        are affected by changing sleep patterns.</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q4" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q4" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>5 - Chronic chest or respiratory disorders whose night-time symptoms are
+                                        significantly worse than in the day-time?</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q5" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q5" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>6 - Any other health related reason?</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q6" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q6" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>7 - Are you an expectant or new mother?</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q7" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q7" value="no" checked> No</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>8 - Are you aged under 18?</strong></label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="night_q8" value="yes"> Yes</label>
+                                    <label><input type="radio" name="night_q8" value="no" checked> No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="acknowledgement-section">
+                            <div class="form-group required-field">
+                                <label><strong>I have read and completed the above Health & Safety Declaration to the
+                                        best of my knowledge and understand that I must inform FT Care Agency Limited of
+                                        any
+                                        changes to the above personal information that may affect my ability to
+                                        undertake assignments. <span class="asterisk">*</span></strong></label>
+                                <div class="radio-group single-option">
+                                    <label><input type="radio" name="ack_1" value="yes"> Yes</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group required-field">
+                                <label><strong>I understand the Health & Safety Assessment Declaration for Night Workers
+                                        as above <span class="asterisk">*</span></strong></label>
+                                <div class="radio-group single-option">
+                                    <label><input type="radio" name="ack_2" value="yes"> Yes</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <section class="info-section">
+                            <h3>Working Time Regulations 1998 – 48 Hour Opt Out Agreement</h3>
+                            <p>This agreement gives notice to my employer of my intention to opt-out of my statutory
+                                right to limit my working week to a maximum of 48 hours over a 17 week reference period.
+                            </p>
+                            <p>I agree that I waive my statutory right not to be required to work more than an average
+                                of 48 hours per week over the relevant reference period as it may be defined from time
+                                to time and as provided in the Working Time Regulations 1998.</p>
+                            <p>I confirm that I waive my statutory right entirely voluntarily and understand that I will
+                                not be treated detrimentally if I do not waive such right.</p>
+                            <p>I understand that if I wish to exercise this right and limit my average working week to
+                                48 hours over the relevant reference period, I will give my employer twelve weeks'
+                                notice of my intention to end this agreement. During the twelve weeks' notice period, I
+                                understand that I may still be asked to work more than 48 hours in any week.</p>
+                        </section>
+
+                        <div class="form-group final-opt-out">
+                            <label><strong>I agree to the Working Time Regulations 1998 – Opt Out Agreement as
+                                    above</strong></label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="opt_out" value="yes"> Yes</label>
+                                <label><input type="radio" name="opt_out" value="no" checked> No</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="step">
+                <div class="step-title">Step 4 of 11</div>
+                <div class="input-group">
+                    <h2 style="margin: 0px; text-align: left;">Section 4: Education</h2>
+                    <br>
+                    <p>Please list all schools attended in chronological order, starting with the most current.</p>
+                    <br>
+                    <textarea
+                        placeholder="Enter details of high schools, colleges, or universities, dates attended, and qualifications obtained..."
+                        style="height: 200px;"></textarea>
+                </div>
+            </div>
+
+            <!-- STEP 5 -->
+            <div class="step">
+                <div class="step-title">Step 5 of 11</div>
+                <div class="input-group">
+                    <h2 style="margin: 0px; text-align: left;">Section 5: Employment Record</h2>
+                    <br>
+                    <p>Please list your complete employment record including employment dates, positions, duties, and
+                        reasons for leaving.</p>
+                    <br>
+                    <textarea
+                        placeholder="Enter details of your full history, explaining any gaps between employments if applicable..."
+                        style="height: 200px;"></textarea>
+                </div>
+            </div>
+
+            <!-- STEP 6 -->
+            <div class="step">
+                <div class="step-title">Step 6 of 11</div>
+                <div class="assessment-container">
+                    <h2>Section 6: Experience & Training Assessment</h2>
+
+                    <div>
+                        <section class="form-section">
+                            <h3>GENERAL</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Residential</span>
+                                    <div class="radio-options"><label><input type="radio" name="residential">
+                                            None</label><label><input type="radio" name="residential">
+                                            Little</label><label><input type="radio" name="residential">
+                                            Some</label><label><input type="radio" name="residential"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Nursing</span>
+                                    <div class="radio-options"><label><input type="radio" name="nursing">
+                                            None</label><label><input type="radio" name="nursing">
+                                            Little</label><label><input type="radio" name="nursing">
+                                            Some</label><label><input type="radio" name="nursing"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Dementia</span>
+                                    <div class="radio-options"><label><input type="radio" name="dementia">
+                                            None</label><label><input type="radio" name="dementia">
+                                            Little</label><label><input type="radio" name="dementia">
+                                            Some</label><label><input type="radio" name="dementia"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Brain Injury</span>
+                                    <div class="radio-options"><label><input type="radio" name="brain_injury">
+                                            None</label><label><input type="radio" name="brain_injury">
+                                            Little</label><label><input type="radio" name="brain_injury">
+                                            Some</label><label><input type="radio" name="brain_injury"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">End of Life</span>
+                                    <div class="radio-options"><label><input type="radio" name="end_of_life">
+                                            None</label><label><input type="radio" name="end_of_life">
+                                            Little</label><label><input type="radio" name="end_of_life">
+                                            Some</label><label><input type="radio" name="end_of_life"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Learning Disabilities</span>
+                                    <div class="radio-options"><label><input type="radio" name="learning_disabilities">
+                                            None</label><label><input type="radio" name="learning_disabilities">
+                                            Little</label><label><input type="radio" name="learning_disabilities">
+                                            Some</label><label><input type="radio" name="learning_disabilities">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Hospital Environment</span>
+                                    <div class="radio-options"><label><input type="radio" name="hospital_env">
+                                            None</label><label><input type="radio" name="hospital_env">
+                                            Little</label><label><input type="radio" name="hospital_env">
+                                            Some</label><label><input type="radio" name="hospital_env"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Mental Health</span>
+                                    <div class="radio-options"><label><input type="radio" name="mental_health">
+                                            None</label><label><input type="radio" name="mental_health">
+                                            Little</label><label><input type="radio" name="mental_health">
+                                            Some</label><label><input type="radio" name="mental_health"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Physical Disabilities</span>
+                                    <div class="radio-options"><label><input type="radio" name="physical_disabilities">
+                                            None</label><label><input type="radio" name="physical_disabilities">
+                                            Little</label><label><input type="radio" name="physical_disabilities">
+                                            Some</label><label><input type="radio" name="physical_disabilities">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Support Work</span>
+                                    <div class="radio-options"><label><input type="radio" name="support_work">
+                                            None</label><label><input type="radio" name="support_work">
+                                            Little</label><label><input type="radio" name="support_work">
+                                            Some</label><label><input type="radio" name="support_work"> Plenty</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>MOBILITY</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Moving and handling</span>
+                                    <div class="radio-options"><label><input type="radio" name="moving_handling">
+                                            None</label><label><input type="radio" name="moving_handling">
+                                            Little</label><label><input type="radio" name="moving_handling">
+                                            Some</label><label><input type="radio" name="moving_handling">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Use of Hoist</span>
+                                    <div class="radio-options"><label><input type="radio" name="use_hoist">
+                                            None</label><label><input type="radio" name="use_hoist">
+                                            Little</label><label><input type="radio" name="use_hoist">
+                                            Some</label><label><input type="radio" name="use_hoist"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Walking Aids</span>
+                                    <div class="radio-options"><label><input type="radio" name="walking_aids">
+                                            None</label><label><input type="radio" name="walking_aids">
+                                            Little</label><label><input type="radio" name="walking_aids">
+                                            Some</label><label><input type="radio" name="walking_aids"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Slide sheets/transfer aids</span>
+                                    <div class="radio-options"><label><input type="radio" name="transfer_aids">
+                                            None</label><label><input type="radio" name="transfer_aids">
+                                            Little</label><label><input type="radio" name="transfer_aids">
+                                            Some</label><label><input type="radio" name="transfer_aids"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Wheelchair</span>
+                                    <div class="radio-options"><label><input type="radio" name="wheelchair">
+                                            None</label><label><input type="radio" name="wheelchair">
+                                            Little</label><label><input type="radio" name="wheelchair">
+                                            Some</label><label><input type="radio" name="wheelchair"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Transfer</span>
+                                    <div class="radio-options"><label><input type="radio" name="transfer">
+                                            None</label><label><input type="radio" name="transfer">
+                                            Little</label><label><input type="radio" name="transfer">
+                                            Some</label><label><input type="radio" name="transfer"> Plenty</label></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>FOOD/DRINK</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Food Hygiene Regs</span>
+                                    <div class="radio-options"><label><input type="radio" name="food_hygiene">
+                                            None</label><label><input type="radio" name="food_hygiene">
+                                            Little</label><label><input type="radio" name="food_hygiene">
+                                            Some</label><label><input type="radio" name="food_hygiene"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Meal preparation</span>
+                                    <div class="radio-options"><label><input type="radio" name="meal_prep">
+                                            None</label><label><input type="radio" name="meal_prep">
+                                            Little</label><label><input type="radio" name="meal_prep">
+                                            Some</label><label><input type="radio" name="meal_prep"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Snacks</span>
+                                    <div class="radio-options"><label><input type="radio" name="snacks">
+                                            None</label><label><input type="radio" name="snacks">
+                                            Little</label><label><input type="radio" name="snacks">
+                                            Some</label><label><input type="radio" name="snacks"> Plenty</label></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>TOILETING</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Catheter bags</span>
+                                    <div class="radio-options"><label><input type="radio" name="catheter_bags">
+                                            None</label><label><input type="radio" name="catheter_bags">
+                                            Little</label><label><input type="radio" name="catheter_bags">
+                                            Some</label><label><input type="radio" name="catheter_bags"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Colostomy bags</span>
+                                    <div class="radio-options"><label><input type="radio" name="colostomy_bags">
+                                            None</label><label><input type="radio" name="colostomy_bags">
+                                            Little</label><label><input type="radio" name="colostomy_bags">
+                                            Some</label><label><input type="radio" name="colostomy_bags"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Bed Pans</span>
+                                    <div class="radio-options"><label><input type="radio" name="bed_pans">
+                                            None</label><label><input type="radio" name="bed_pans">
+                                            Little</label><label><input type="radio" name="bed_pans">
+                                            Some</label><label><input type="radio" name="bed_pans"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Commodes</span>
+                                    <div class="radio-options"><label><input type="radio" name="commodes">
+                                            None</label><label><input type="radio" name="commodes">
+                                            Little</label><label><input type="radio" name="commodes">
+                                            Some</label><label><input type="radio" name="commodes"> Plenty</label></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>OBSERVATIONS</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">BP</span>
+                                    <div class="radio-options"><label><input type="radio" name="bp">
+                                            None</label><label><input type="radio" name="bp">
+                                            Little</label><label><input type="radio" name="bp">
+                                            Some</label><label><input type="radio" name="bp"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Pulse</span>
+                                    <div class="radio-options"><label><input type="radio" name="pulse">
+                                            None</label><label><input type="radio" name="pulse">
+                                            Little</label><label><input type="radio" name="pulse">
+                                            Some</label><label><input type="radio" name="pulse"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Temperature</span>
+                                    <div class="radio-options"><label><input type="radio" name="temperature">
+                                            None</label><label><input type="radio" name="temperature">
+                                            Little</label><label><input type="radio" name="temperature">
+                                            Some</label><label><input type="radio" name="temperature"> Plenty</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>HEALTH & SAFETY</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Risk assessment</span>
+                                    <div class="radio-options"><label><input type="radio" name="risk_assessment">
+                                            None</label><label><input type="radio" name="risk_assessment">
+                                            Little</label><label><input type="radio" name="risk_assessment">
+                                            Some</label><label><input type="radio" name="risk_assessment">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">COSHH</span>
+                                    <div class="radio-options"><label><input type="radio" name="coshh">
+                                            None</label><label><input type="radio" name="coshh">
+                                            Little</label><label><input type="radio" name="coshh">
+                                            Some</label><label><input type="radio" name="coshh"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">RIDDOR</span>
+                                    <div class="radio-options"><label><input type="radio" name="riddor">
+                                            None</label><label><input type="radio" name="riddor">
+                                            Little</label><label><input type="radio" name="riddor">
+                                            Some</label><label><input type="radio" name="riddor"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">PUWER</span>
+                                    <div class="radio-options"><label><input type="radio" name="puwer">
+                                            None</label><label><input type="radio" name="puwer">
+                                            Little</label><label><input type="radio" name="puwer">
+                                            Some</label><label><input type="radio" name="puwer"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">LOLER</span>
+                                    <div class="radio-options"><label><input type="radio" name="loler">
+                                            None</label><label><input type="radio" name="loler">
+                                            Little</label><label><input type="radio" name="loler">
+                                            Some</label><label><input type="radio" name="loler"> Plenty</label></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>DOMESTIC</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Housework</span>
+                                    <div class="radio-options"><label><input type="radio" name="housework">
+                                            None</label><label><input type="radio" name="housework">
+                                            Little</label><label><input type="radio" name="housework">
+                                            Some</label><label><input type="radio" name="housework"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Laundry</span>
+                                    <div class="radio-options"><label><input type="radio" name="laundry">
+                                            None</label><label><input type="radio" name="laundry">
+                                            Little</label><label><input type="radio" name="laundry">
+                                            Some</label><label><input type="radio" name="laundry"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Bed making</span>
+                                    <div class="radio-options"><label><input type="radio" name="bed_making">
+                                            None</label><label><input type="radio" name="bed_making">
+                                            Little</label><label><input type="radio" name="bed_making">
+                                            Some</label><label><input type="radio" name="bed_making"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Shopping</span>
+                                    <div class="radio-options"><label><input type="radio" name="shopping">
+                                            None</label><label><input type="radio" name="shopping">
+                                            Little</label><label><input type="radio" name="shopping">
+                                            Some</label><label><input type="radio" name="shopping"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Payment of bills</span>
+                                    <div class="radio-options"><label><input type="radio" name="payment_bills">
+                                            None</label><label><input type="radio" name="payment_bills">
+                                            Little</label><label><input type="radio" name="payment_bills">
+                                            Some</label><label><input type="radio" name="payment_bills"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Handling money</span>
+                                    <div class="radio-options"><label><input type="radio" name="handling_money">
+                                            None</label><label><input type="radio" name="handling_money">
+                                            Little</label><label><input type="radio" name="handling_money">
+                                            Some</label><label><input type="radio" name="handling_money"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Ironing</span>
+                                    <div class="radio-options"><label><input type="radio" name="ironing">
+                                            None</label><label><input type="radio" name="ironing">
+                                            Little</label><label><input type="radio" name="ironing">
+                                            Some</label><label><input type="radio" name="ironing"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Washing up</span>
+                                    <div class="radio-options"><label><input type="radio" name="washing_up">
+                                            None</label><label><input type="radio" name="washing_up">
+                                            Little</label><label><input type="radio" name="washing_up">
+                                            Some</label><label><input type="radio" name="washing_up"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Care of pets</span>
+                                    <div class="radio-options"><label><input type="radio" name="care_pets">
+                                            None</label><label><input type="radio" name="care_pets">
+                                            Little</label><label><input type="radio" name="care_pets">
+                                            Some</label><label><input type="radio" name="care_pets"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Home maintenance</span>
+                                    <div class="radio-options"><label><input type="radio" name="home_maintenance">
+                                            None</label><label><input type="radio" name="home_maintenance">
+                                            Little</label><label><input type="radio" name="home_maintenance">
+                                            Some</label><label><input type="radio" name="home_maintenance">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Light gardening</span>
+                                    <div class="radio-options"><label><input type="radio" name="light_gardening">
+                                            None</label><label><input type="radio" name="light_gardening">
+                                            Little</label><label><input type="radio" name="light_gardening">
+                                            Some</label><label><input type="radio" name="light_gardening">
+                                            Plenty</label></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>PERSONAL TASKS</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Washing</span>
+                                    <div class="radio-options"><label><input type="radio" name="washing">
+                                            None</label><label><input type="radio" name="washing">
+                                            Little</label><label><input type="radio" name="washing">
+                                            Some</label><label><input type="radio" name="washing"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Bathing</span>
+                                    <div class="radio-options"><label><input type="radio" name="bathing">
+                                            None</label><label><input type="radio" name="bathing">
+                                            Little</label><label><input type="radio" name="bathing">
+                                            Some</label><label><input type="radio" name="bathing"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Shaving</span>
+                                    <div class="radio-options"><label><input type="radio" name="shaving">
+                                            None</label><label><input type="radio" name="shaving">
+                                            Little</label><label><input type="radio" name="shaving">
+                                            Some</label><label><input type="radio" name="shaving"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Teeth</span>
+                                    <div class="radio-options"><label><input type="radio" name="teeth">
+                                            None</label><label><input type="radio" name="teeth">
+                                            Little</label><label><input type="radio" name="teeth">
+                                            Some</label><label><input type="radio" name="teeth"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Hair</span>
+                                    <div class="radio-options"><label><input type="radio" name="hair">
+                                            None</label><label><input type="radio" name="hair">
+                                            Little</label><label><input type="radio" name="hair">
+                                            Some</label><label><input type="radio" name="hair"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Putting to bed</span>
+                                    <div class="radio-options"><label><input type="radio" name="putting_bed">
+                                            None</label><label><input type="radio" name="putting_bed">
+                                            Little</label><label><input type="radio" name="putting_bed">
+                                            Some</label><label><input type="radio" name="putting_bed"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Getting up</span>
+                                    <div class="radio-options"><label><input type="radio" name="getting_up">
+                                            None</label><label><input type="radio" name="getting_up">
+                                            Little</label><label><input type="radio" name="getting_up">
+                                            Some</label><label><input type="radio" name="getting_up"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Dressing</span>
+                                    <div class="radio-options"><label><input type="radio" name="dressing">
+                                            None</label><label><input type="radio" name="dressing">
+                                            Little</label><label><input type="radio" name="dressing">
+                                            Some</label><label><input type="radio" name="dressing"> Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Undressing</span>
+                                    <div class="radio-options"><label><input type="radio" name="undressing">
+                                            None</label><label><input type="radio" name="undressing">
+                                            Little</label><label><input type="radio" name="undressing">
+                                            Some</label><label><input type="radio" name="undressing"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Finger nails</span>
+                                    <div class="radio-options"><label><input type="radio" name="finger_nails">
+                                            None</label><label><input type="radio" name="finger_nails">
+                                            Little</label><label><input type="radio" name="finger_nails">
+                                            Some</label><label><input type="radio" name="finger_nails"> Plenty</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="form-section">
+                            <h3>HEALTH</h3>
+                            <div class="grid-container">
+                                <div class="assessment-item">
+                                    <span class="item-title">Administration of medicines</span>
+                                    <div class="radio-options"><label><input type="radio" name="admin_medicines">
+                                            None</label><label><input type="radio" name="admin_medicines">
+                                            Little</label><label><input type="radio" name="admin_medicines">
+                                            Some</label><label><input type="radio" name="admin_medicines">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Foot care</span>
+                                    <div class="radio-options"><label><input type="radio" name="foot_care">
+                                            None</label><label><input type="radio" name="foot_care">
+                                            Little</label><label><input type="radio" name="foot_care">
+                                            Some</label><label><input type="radio" name="foot_care"> Plenty</label>
+                                    </div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Infection control</span>
+                                    <div class="radio-options"><label><input type="radio" name="infection_control">
+                                            None</label><label><input type="radio" name="infection_control">
+                                            Little</label><label><input type="radio" name="infection_control">
+                                            Some</label><label><input type="radio" name="infection_control">
+                                            Plenty</label></div>
+                                </div>
+                                <div class="assessment-item">
+                                    <span class="item-title">Collecting medicines</span>
+                                    <div class="radio-options"><label><input type="radio" name="collecting_medicines">
+                                            None</label><label><input type="radio" name="collecting_medicines">
+                                            Little</label><label><input type="radio" name="collecting_medicines">
+                                            Some</label><label><input type="radio" name="collecting_medicines">
+                                            Plenty</label></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7 -->
+            <div class="step">
+                <div class="step-title">Step 7 of 11</div>
+                <div class="input-group">
+                    <h2>Section 7: Personal Attributes & Statement</h2>
+                    <br>
+                    <textarea name="personal_statement_details" rows="6"
+                        placeholder="Enter your statement here..."></textarea>
+                    <br>
+                    <p>Use this space to add further information about your suitability for this opportunity (e.g.:
+                        Mental health, Brain injury, Learning disability and reference any other areas that highlight
+                        your key skills)</p>
+                </div>
+            </div>
+
+            <!-- STEP 8 -->
+            <div class="step">
+                <div class="step-title">Step 8 of 11</div>
+                <div class="form-container">
+                    <header>
+                        <h2>Section 8: Next Of Kin Information</h2>
+                        <p class="instruction">Please provide details of an emergency contact that we can call in an
+                            unexpected incident, accident or emergency.</p>
+                    </header>
+                    <br>
+
+                    <div>
+                        <div class="form-group">
+                            <label class="main-label">Name</label>
+                            <div class="input-row">
+                                <input type="text" name="first_name" placeholder="First">
+                                <input type="text" name="last_name" placeholder="Last">
+                            </div>
+                        </div>
+
+                        <div class="input-grid-twin">
+                            <div class="form-group">
+                                <label class="main-label">Relationship</label>
+                                <input type="text" name="relationship">
+                            </div>
+                            <div class="form-group">
+                                <label class="main-label">Contact Number</label>
+                                <input type="tel" name="contact_number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 9 -->
+            <div class="step">
+                <div class="step-title">Step 9 of 11</div>
+                <div class="references-container">
+                    <header>
+                        <h2>Section 9: References</h2>
+                        <p class="instruction">Please give the names and addresses of your two most recent employers (if
+                            applicable). If you are unable to do this, please clearly outline who your referees are.</p>
+                    </header>
+                    <br>
+
+                    <div>
+                        <fieldset class="reference-block">
+                            <legend>Reference 1</legend>
+
+                            <div class="form-group">
+                                <label class="main-label">Name</label>
+                                <div class="input-row-twin">
+                                    <input type="text" name="ref1_first_name" placeholder="First">
+                                    <input type="text" name="ref1_last_name" placeholder="Last">
+                                </div>
+                            </div>
+
+                            <div class="input-grid-twin">
+                                <div class="form-group">
+                                    <label class="main-label">Job Title</label>
+                                    <input type="text" name="ref1_job_title">
+                                </div>
+                                <div class="form-group">
+                                    <label class="main-label">Name of Organisation</label>
+                                    <input type="text" name="ref1_org_name">
+                                </div>
+                            </div>
+
+                            <div class="input-grid-twin">
+                                <div class="form-group">
+                                    <label class="main-label">Employment start date</label>
+                                    <input type="date" name="ref1_start_date">
+                                </div>
+                                <div class="form-group">
+                                    <label class="main-label">Employment end date</label>
+                                    <input type="date" name="ref1_end_date">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="main-label">Address</label>
+                                <input type="text" name="ref1_address_line1" placeholder="Address Line 1"
+                                    class="margin-bottom-sm">
+                                <div class="address-grid-bottom">
+                                    <input type="text" name="ref1_city" placeholder="City">
+                                    <input type="text" name="ref1_postal_code" placeholder="Postal / Zip Code">
+                                    <div class="select-wrapper">
+                                        <select class="country-dropdown">
+                                            <option>country</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-grid-twin">
+                                <div class="form-group">
+                                    <label class="main-label">Telephone</label>
+                                    <input type="tel" name="ref1_telephone">
+                                </div>
+                                <div class="form-group">
+                                    <label class="main-label">Email</label>
+                                    <input type="email" name="ref1_email">
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <fieldset class="reference-block">
+                            <legend>Reference 2</legend>
+
+                            <div class="form-group">
+                                <label class="main-label">Name</label>
+                                <div class="input-row-twin">
+                                    <input type="text" name="ref2_first_name" placeholder="First">
+                                    <input type="text" name="ref2_last_name" placeholder="Last">
+                                </div>
+                            </div>
+
+                            <div class="input-grid-twin">
+                                <div class="form-group">
+                                    <label class="main-label">Job Title</label>
+                                    <input type="text" name="ref2_job_title">
+                                </div>
+                                <div class="form-group">
+                                    <label class="main-label">Name of Organisation</label>
+                                    <input type="text" name="ref2_org_name">
+                                </div>
+                            </div>
+
+                            <div class="input-grid-twin">
+                                <div class="form-group">
+                                    <label class="main-label">Employment start date</label>
+                                    <input type="date" name="ref2_start_date">
+                                </div>
+                                <div class="form-group">
+                                    <label class="main-label">Employment end date</label>
+                                    <input type="date" name="ref2_end_date">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="main-label">Address</label>
+                                <input type="text" name="ref2_address_line1" placeholder="Address Line 1"
+                                    class="margin-bottom-sm">
+                                <div class="address-grid-bottom">
+                                    <input type="text" name="ref2_city" placeholder="City">
+                                    <input type="text" name="ref2_postal_code" placeholder="Postal / Zip Code">
+                                    <div class="select-wrapper">
+                                        <select class="country-dropdown">
+                                            <option>country</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-grid-twin">
+                                <div class="form-group">
+                                    <label class="main-label">Telephone</label>
+                                    <input type="tel" name="ref2_telephone">
+                                </div>
+                                <div class="form-group">
+                                    <label class="main-label">Email</label>
+                                    <input type="email" name="ref2_email">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 10 -->
+            <div class="step">
+                <div class="step-title">Step 10 of 11</div>
+                <div class="form-container">
+
+                    <h1>Section 10: Consent Forms, GDPR, DBS and Staff Handbook Receipt</h1>
+
+                    <section class="form-section">
+                        <h2>Staff Consent</h2>
+                        <p class="section-description">This consent is to protect staff information which is currently
+                            held under Data Protection Act 1998 and the Freedom of Information Act 2000.</p>
+                        <br>
+
+                        <div class="question-block">
+                            <label class="required-label">I hereby give consent to my file being audited by relevant
+                                authorities or appointed auditors as part of FT Care Agency Limited continued compliance
+                                process.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="audit-consent" name="audit-consent">
+                                <label for="audit-consent">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand that my file may be audited by the Care Quality
+                                Commission (CQC), Local Authority Commissioners, NHS partners, Skills for Care, or other
+                                relevant regulatory and compliance bodies, and I give consent for access to my file as
+                                part of compliance, quality assurance, and safeguarding review processes.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="ccp-consent" name="ccp-consent">
+                                <label for="ccp-consent">Yes</label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <hr>
+
+                    <section class="form-section">
+                        <h2>GDPR – General Data Protection Regulations</h2>
+                        <br>
+                        <p>In May 2018 the law changed about how companies record, store and use individuals' personal
+                            data. Currently the Data Protection Act covers how this is managed, but this new GDPR law
+                            means we have to change some of our working practices.</p>
+                        <br>
+                        <p>As a company we need to collect and hold data about you to enable us to process your job
+                            application. The GDPR laws places a further (and new) obligation for employers to tell their
+                            job applicants in more detail why we collect your data, what we do with it, and how long we
+                            expect to retain it.</p>
+                        <br>
+                        <p>We wish to obtain your informed consent about the data that we may hold about you as it
+                            provides you with a better understanding of how we will use your data. We are not planning
+                            to transfer your data outside the EU.</p>
+                        <br>
+                        <p>We would like to request your consent to hold personal and special data about you in order
+                            that we can process your employment application.</p>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Type of data</th>
+                                        <th>Why we wish to hold it</th>
+                                        <th>How long it will be kept for</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="row-num">1</td>
+                                        <td>
+                                            <strong>Recruitment data</strong>
+                                            <ul>
+                                                <li>Previous employers</li>
+                                                <li>Types of job held at other companies</li>
+                                                <li>Previous salaries</li>
+                                                <li>Skills and qualifications obtained</li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <p>This will allow us to make a decision on your suitability for
+                                                employment/engagement.</p>
+                                            <p>It will help us to decide which dept. you may be most suitable in.</p>
+                                        </td>
+                                        <td>
+                                            <p>Data obtained during recruitment will only be kept until either your
+                                                application has been declined and then destroyed after 6 months.</p>
+                                            <p>If a job offer is made a more comprehensive GDPR consent form will be
+                                                issued.</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="row-num">2</td>
+                                        <td><strong>Health & Safety</strong></td>
+                                        <td>To assess candidates' fitness to carry out day/night work whilst on
+                                            assignment.</td>
+                                        <td>This data will be kept for the duration of this round of applications and
+                                            will be anonymised and stored for 4 years afterwards.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="row-num">3</td>
+                                        <td>
+                                            <strong>Ethnic monitoring data</strong>
+                                            <p class="table-subtext">Data relating to your racial origin, religion,
+                                                gender, sexual orientation, etc. that are classed as protected
+                                                characteristics under the Equality Act 2010</p>
+                                        </td>
+                                        <td>We use this data to understand the ethnic makeup of our workforce and job
+                                            applicants and it allows us to inform our recruitment process if we believe
+                                            we do not have the correct diversity</td>
+                                        <td>This data will be kept for the duration of this round of applications and
+                                            will be anonymised and stored for 4 years afterwards.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <hr>
+
+                    <section class="form-section">
+                        <h2>Agreement to Use My Data</h2>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand that I can ask to see this data to check its
+                                accuracy at any time via a subject access request (SAR).</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sar-request" name="sar-request">
+                                <label for="sar-request">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand that I can ask for a copy of my personal data
+                                held about me at any time, and this request is free of charge.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="free-copy" name="free-copy">
+                                <label for="free-copy">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand that I can request that data that is no longer
+                                required to be held, can be removed from my file and destroyed.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="destroy-data" name="destroy-data">
+                                <label for="destroy-data">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand that if I am unsuccessful with my application my
+                                data will be destroyed after 6 months.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="unsuccessful-destroy" name="unsuccessful-destroy">
+                                <label for="unsuccessful-destroy">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand the Data Controller for FT Care can be reached
+                                at admin@ftcareagency.co.uk and I can contact them directly if I have any questions or
+                                concerns.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="contact-controller" name="contact-controller">
+                                <label for="contact-controller">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I understand that if I am dissatisfied with how my company
+                                uses my data I can make a complaint to the government body in charge (Information
+                                Commissioner's Office, Wycliffe House, Water Lane, Wilmslow, Cheshire, SK9 5AF or at
+                                www.ico.org.uk)</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="complaint-info" name="complaint-info">
+                                <label for="complaint-info">Yes</label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <hr>
+
+                    <section class="form-section">
+                        <h2>DBS/Update Service</h2>
+
+                        <div class="question-block">
+                            <label class="required-label">By marking this I give permission to FT Care Agency Limited to
+                                complete an update check on my most recent DBS.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="dbs-update-check" name="dbs-update-check">
+                                <label for="dbs-update-check">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label>If you do not have a current DBS then a full enhanced DBS will need to be completed
+                                and by marking this I give permission for the full enhanced DBS to be completed on my
+                                behalf.</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="dbs-cost-consent" name="dbs-cost-consent">
+                                <label for="dbs-cost-consent">Yes</label>
+                            </div>
+                        </div>
+
+                        <p class="form-instruction">Please enter the details of DBS to check if you have one</p>
+                        <br>
+
+                        <div class="form-grid1">
+                            <div class="input-group">
+                                <label for="dbs-number">DBS Certificate Number</label>
+                                <input type="text" id="dbs-number" name="dbs-number">
+                            </div>
+                            <div class="input-group">
+                                <label for="dbs-date">DBS Issue Date</label>
+                                <input type="date" id="dbs-date" name="dbs-date">
+                            </div>
+                            <div class="input-group">
+                                <label for="dbs-name">Name on DBS</label>
+                                <input type="text" id="dbs-name" name="dbs-name">
+                            </div>
+                            <div class="input-group">
+                                <label for="dbs-dob">Date of Birth</label>
+                                <input type="date" id="dbs-dob" name="dbs-dob">
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <!-- STEP 11 -->
+            <div class="step">
+                <div class="step-title">Step 11 of 11</div>
+                <div class="form-container">
+
+                    <h1>11. Declaration</h1>
+
+                    <section class="form-section">
+                        <p class="declaration-text">
+                            I confirm that the information provided in this application (and within my Curriculum Vitae
+                            if applicable) is both truthful and accurate. I have omitted no facts that could affect my
+                            employment. I understand that any false misleading statements could place any subsequent
+                            employment in jeopardy. I understand that any employment entered is subject to documentary
+                            evidence of my right to work in the UK and satisfactory references. I expressly consent to
+                            personal data contained within this form being recorded for the purposes of assessing
+                            suitability for the post and may form the basis of any subsequent personnel file. I also
+                            consent to FT Care agency limited disclosing my personal information, such as, but not limited to:
+                            CV, forms of ID, proof of CRB, European Criminal Record, Diplomas/certificates, to a third
+                            party in order to find me suitable employment.
+                        </p>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="question-block">
+                            <label class="required-label">I have read and fully understand the declaration as above and
+                                contained in this document</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="read-declaration" name="read-declaration">
+                                <label for="read-declaration">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I have provided consent for Data Protection Act 1998 and the
+                                Freedom of information Act 2000</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="data-protection-consent" name="data-protection-consent">
+                                <label for="data-protection-consent">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I have provided consent for GDPR agreement to use my
+                                data</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="gdpr-consent" name="gdpr-consent">
+                                <label for="gdpr-consent">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I agree to the DBS/Update Service consent form</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="dbs-consent" name="dbs-consent">
+                                <label for="dbs-consent">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I will follow the Policies and Procedures within the Staff
+                                Handbook (sent by email)</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="handbook-consent" name="handbook-consent">
+                                <label for="handbook-consent">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I have completed details for the Rehabilitation of Offenders
+                                Act</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="offenders-act" name="offenders-act">
+                                <label for="offenders-act">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I have completed the Health & Safety Assessment Declaration
+                                for Night Workers</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="night-workers" name="night-workers">
+                                <label for="night-workers">Yes</label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <label class="required-label">I agree to the Working Time Regulations 1998 – Opt Out
+                                Agreement</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="opt-out-yes" name="opt-out-final" value="yes">
+                                    <label for="opt-out-yes">Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="opt-out-no" name="opt-out-final" value="no">
+                                    <label for="opt-out-no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <p class="footnote-text">
+                            The personal information (data) collected on this form, and on the attachments, (which
+                            includes the collection of sensitive personal data) are collected for the purposes of
+                            recruitment, personnel administration (for new employees) and monitoring. Unless you direct
+                            otherwise (for example in a situation where you would like this Application kept on file for
+                            future vacancies) the Application Forms (and attachments) of unsuccessful applicants will be
+                            destroyed after 6 months. It is the policy of the Company to protect, and keep secure, all
+                            personal data collected. All personal data is processed for the purposes of recruitment,
+                            and, in the case of successful Applicants, for the satisfactory administration of their
+                            employment, and for no other purpose.
+                        </p>
+                    </section>
+
+                    <section class="form-section upload-grid">
+                        <div class="upload-container">
+                            <label class="upload-title">CV</label>
+                            <div class="dropzone">
+                                <input type="file" id="cv" accept=".pdf">
+                            </div>
+                            <span class="upload-instruction">Upload your CV (PDF only)</span>
+                        </div>
+
+                        <div class="upload-container">
+                            <label class="upload-title">Cover Letter</label>
+
+                            <div class="dropzone">
+                                <input type="file" id="cover_letter" accept=".pdf">
+                            </div>
+                            <span class="upload-instruction">Upload your cover letter (PDF only)</span>
+                        </div>
+
+                    </section>
+
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="prev-btn" id="prevBtn">Previous</button>
+                <button type="button" class="next-btn" id="nextBtn">Next</button>
+            </div>
+
+        </form>
+
+        <div class="success-message" id="successMessage">
+            ✅ Form Submitted Successfully! PDF Sent To Email.
+        </div>
+
+    </div>
+
+    <script>
+        /* =========================
+           EMAILJS CONFIG
+        ========================= */
+        emailjs.init("YOUR_PUBLIC_KEY");
+
+        /* =========================
+           MULTI STEP FORM
+        ========================= */
+        const steps = document.querySelectorAll(".step");
+        const nextBtn = document.getElementById("nextBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const progress = document.getElementById("progress");
+
+        let currentStep = 0;
+
+        function updateForm() {
+            steps.forEach((step, index) => {
+                step.classList.toggle("active", index === currentStep);
+            });
+
+            prevBtn.style.display = currentStep === 0 ? "none" : "inline-block";
+
+            if (currentStep === steps.length - 1) {
+                nextBtn.innerHTML = "Submit";
+                nextBtn.classList.remove("next-btn");
+                nextBtn.classList.add("submit-btn");
+            } else {
+                nextBtn.innerHTML = "Next";
+                nextBtn.classList.remove("submit-btn");
+                nextBtn.classList.add("next-btn");
+            }
+
+            progress.style.width = ((currentStep + 1) / steps.length) * 100 + "%";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateForm();
+            } else {
+                submitForm();
+            }
+        });
+
+        prevBtn.addEventListener("click", () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateForm();
+            }
+        });
+
+        /* =========================
+           GATHER FORM DATA DYNAMICALLY
+        ========================= */
+        function gatherFormData() {
+            const data = [];
+
+            steps.forEach((step, index) => {
+                const stepNum = index + 1;
+                let stepTitle = "";
+                const h1 = step.querySelector("h1");
+                const h2 = step.querySelector("h2");
+                if (h1) stepTitle = h1.textContent.trim();
+                else if (h2) stepTitle = h2.textContent.trim();
+                else stepTitle = "Section " + stepNum;
+
+                const fields = [];
+                const processedNames = new Set();
+
+                // Fetch all actionable form controls inside this step
+                const controls = step.querySelectorAll("input, select, textarea");
+
+                controls.forEach(control => {
+                    if (control.type === "button" || control.type === "submit" || control.type === "file") {
+                        return;
+                    }
+
+                    // Radio buttons processing
+                    if (control.type === "radio") {
+                        const name = control.name;
+                        if (!name || processedNames.has(name)) return;
+                        processedNames.add(name);
+
+                        const checkedRadio = step.querySelector('input[name="' + name + '"]:checked');
+                        let value = "Not selected";
+                        if (checkedRadio) {
+                            const parentLabel = checkedRadio.closest("label");
+                            if (parentLabel) {
+                                value = parentLabel.textContent.trim();
+                            } else {
+                                value = checkedRadio.value;
+                            }
+                        }
+
+                        let groupLabel = "";
+                        const formGroup = control.closest(".form-group, .assessment-item, .question-block, div");
+                        if (formGroup) {
+                            const labelEl = formGroup.querySelector(".main-label, .item-title, label, strong");
+                            if (labelEl && labelEl !== control.closest("label")) {
+                                groupLabel = labelEl.textContent.trim();
+                            }
+                        }
+                        if (!groupLabel) groupLabel = name;
+
+                        fields.push({
+                            label: groupLabel.replace(/\s+/g, ' ').trim(),
+                            value: value.trim()
+                        });
+                        return;
+                    }
+
+                    // Checkbox items processing
+                    if (control.type === "checkbox") {
+                        const parentLabel = control.closest("label") || control.closest(".check-item") || control.closest(".checkbox-group");
+                        let labelText = "";
+                        if (parentLabel) {
+                            labelText = parentLabel.textContent.trim();
+                        } else {
+                            labelText = control.id || "Agreement/Consent";
+                        }
+
+                        fields.push({
+                            label: labelText.replace(/\s+/g, ' ').trim(),
+                            value: control.checked ? "Yes / Checked" : "No / Unchecked"
+                        });
+                        return;
+                    }
+
+                    // Text/Select/Textarea inputs processing
+                    let labelText = "";
+                    if (control.placeholder) {
+                        labelText = control.placeholder;
+                    }
+
+                    const formGroup = control.closest(".form-group, .input-group, div");
+                    if (formGroup) {
+                        const labelEl = formGroup.querySelector("label, .main-label");
+                        if (labelEl) {
+                            const baseLabel = labelEl.textContent.trim();
+                            if (labelText && labelText !== baseLabel) {
+                                labelText = baseLabel + " (" + labelText + ")";
+                            } else {
+                                labelText = baseLabel;
+                            }
+                        }
+                    }
+
+                    if (!labelText) {
+                        labelText = control.name || control.id || "Field";
+                    }
+
+                    labelText = labelText.replace(/\s+/g, ' ').replace(/\s*\*$/, '').trim();
+                    let val = control.value ? control.value.trim() : "";
+                    if (!val || val === "Select" || val === "country") val = "N/A";
+
+                    fields.push({ label: labelText, value: val });
+                });
+
+                if (fields.length > 0) {
+                    data.push({ title: stepTitle, fields: fields });
+                }
+            });
+
+            return data;
+        }
+        // Inside your form submission event handler:
+        async function handleFormSubmit() {
+            try {
+                const cvFile = document.getElementById("cv").files[0];
+                const clFile = document.getElementById("cover_letter").files[0];
+
+                // Convert files to Base64 Data URLs
+                const cvBase64 = cvFile ? await fileToBase64(cvFile) : null;
+                const clBase64 = clFile ? await fileToBase64(clFile) : null;
+
+                // Your existing template parameters setup
+                const templateParams = {
+                    // ... your existing fields (name, email, etc.) ...
+
+                    // Add the attachments variables
+                    cv_attachment: cvBase64,
+                    cover_letter_attachment: clBase64
+                };
+
+                // Send via EmailJS
+                emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                    .then(function (response) {
+                        console.log("SUCCESS!", response.status, response.text);
+                        alert("Application sent successfully!");
+                    })
+                    .catch(function (error) {
+                        console.log("FAILED...", error);
+                        alert("Email Failed!");
+                    });
+
+            } catch (error) {
+                console.error("Error processing files:", error);
+            }
+        }
+        /* =========================
+           SUBMIT FORM & CREATE PDF
+        ========================= */
+        function submitForm() {
+            // Collect email for naming purposes or basic metadata
+            const emailInput = document.querySelector('input[type="email"]');
+            const firstNameInput = document.querySelector('input[placeholder="First"]');
+            const lastNameInput = document.querySelector('input[placeholder="Last"]');
+
+            const candidateName = (firstNameInput?.value || "") + " " + (lastNameInput?.value || "");
+            const emailValue = emailInput?.value || "N/A";
+
+            /* =========================
+               GENERATE PDF WITH JSPDF
+            ========================= */
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+
+            let y = 20;
+            const marginX = 20;
+            const pageHeight = 297;
+            const pageWidth = 210;
+            const contentWidth = pageWidth - (2 * marginX);
+
+            // Document Main Title
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(198, 92, 43); // Matching theme #c65c2b
+            doc.text("FT Care agency limited - Job Application", marginX, y);
+            y += 8;
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Applicant: " + (candidateName.trim() || "Candidate") + " (" + emailValue + ")", marginX, y);
+            y += 5;
+            doc.text("Generated on: " + new Date().toLocaleString(), marginX, y);
+            y += 8;
+
+            // Header line accent
+            doc.setDrawColor(220, 220, 220);
+            doc.setLineWidth(0.5);
+            doc.line(marginX, y, pageWidth - marginX, y);
+            y += 12;
+
+            const structuralData = gatherFormData();
+
+            structuralData.forEach((section) => {
+                // Page overflow check for section header
+                if (y > pageHeight - 30) {
+                    doc.addPage();
+                    y = 20;
+                }
+
+                // Draw Section Header Block
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(14);
+                doc.setTextColor(30, 41, 59);
+                doc.text(section.title, marginX, y);
+                y += 5;
+
+                doc.setDrawColor(198, 92, 43);
+                doc.setLineWidth(0.5);
+                doc.line(marginX, y, marginX + 25, y);
+                y += 8;
+
+                // Section Fields
+                section.fields.forEach((field) => {
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(9.5);
+                    const labelLines = doc.splitTextToSize(field.label, contentWidth);
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    const valLines = doc.splitTextToSize(field.value, contentWidth - 6);
+
+                    const fieldRowHeight = (labelLines.length * 4.5) + (valLines.length * 4.5) + 5;
+
+                    // Overflow check for individual records row
+                    if (y + fieldRowHeight > pageHeight - 15) {
+                        doc.addPage();
+                        y = 20;
+
+                        doc.setFont("helvetica", "italic");
+                        doc.setFontSize(9);
+                        doc.setTextColor(160, 160, 160);
+                        doc.text(section.title + " (continued)", marginX, y);
+                        y += 8;
+                    }
+
+                    // Render Question/Label
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(9.5);
+                    doc.setTextColor(71, 85, 105);
+                    labelLines.forEach(line => {
+                        doc.text(line, marginX, y);
+                        y += 4.5;
+                    });
+
+                    // Render Answer/Value
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.setTextColor(15, 23, 42);
+                    valLines.forEach(line => {
+                        doc.text(line, marginX + 5, y);
+                        y += 4.5;
+                    });
+
+                    y += 2.5; // Gap between records
+                });
+
+                y += 6; // Spacing after section block
+            });
+            // Function to convert file to Base64
+            const fileToBase64 = (file) => {
+                return new Promise((resolve, reject) => {
+                    if (!file) resolve(null);
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = (error) => reject(error);
+                });
+            };
+
+            /* DOWNLOAD COMPLETED APPLICATION PDF */
+            doc.save("Job-Application-" + (firstNameInput?.value || "Candidate") + ".pdf");
+
+            /* =========================
+               SEND DATA TO EMAILJS
+            ========================= */
+            // Construct flattened data object for simple template access if required
+            const payload = {
+                candidate_name: candidateName,
+                candidate_email: emailValue,
+                submission_date: new Date().toLocaleDateString()
+            };
+
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", payload)
+                .then(function (response) {
+                    document.getElementById("successMessage").style.display = "block";
+                    console.log("SUCCESS!", response.status, response.text);
+                })
+                .catch(function (error) {
+                    alert("Email Submission Failed!");
+                    console.log("FAILED...", error);
+                });
+        }
+
+        /* =========================
+           POPULATE COUNTRY DROPDOWNS
+        ========================= */
+        const countrySelects = document.querySelectorAll(".country-dropdown, #country");
+
+        fetch("https://restcountries.com/v3.1/all?fields=name")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("API ERROR");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const sortedCountries = data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+                countrySelects.forEach(select => {
+                    select.innerHTML = '<option value="">Select Country</option>';
+                    sortedCountries.forEach((country) => {
+                        const option = document.createElement("option");
+                        option.value = country.name.common;
+                        option.textContent = country.name.common;
+                        select.appendChild(option);
+                    });
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                countrySelects.forEach(select => {
+                    select.innerHTML = '<option>Error Loading Countries</option>';
+                });
+            });
+
+        updateForm();
+    </script>
+
+</body>
+
+</html>
